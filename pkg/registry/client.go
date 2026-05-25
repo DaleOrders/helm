@@ -717,11 +717,6 @@ func (c *Client) Push(data []byte, ref string, options ...PushOption) (*PushResu
 	repository.PlainHTTP = c.plainHTTP
 	repository.Client = c.authorizer
 
-	// Hint the auth client to acquire a token with both pull and push
-	// permissions upfront. Without this, registries like quay.io that cache
-	// tokens issue a pull-only token on the first Exists check, and the
-	// subsequent push fails with 401.
-	// See https://github.com/helm/helm/issues/32144
 	ctx = auth.AppendRepositoryScope(ctx, parsedRef.orasReference, auth.ActionPull, auth.ActionPush)
 
 	manifestDescriptor, err = oras.ExtendedCopy(ctx, memoryStore, parsedRef.String(), repository, parsedRef.String(), oras.DefaultExtendedCopyOptions)
